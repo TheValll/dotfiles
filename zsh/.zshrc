@@ -17,26 +17,18 @@ source $ZSH/oh-my-zsh.sh
 # Sesh (tmux session manager)
 # ============================================
 function sesh_connect() {
-  local _fzf_opts=(
-    --no-sort --border-label ' sesh ' --prompt '  '
-    --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find'
-    --bind 'tab:down,btab:up'
-    --bind 'ctrl-a:change-prompt(  )+reload(sesh list)'
-    --bind 'ctrl-t:change-prompt(  )+reload(sesh list -t)'
-    --bind 'ctrl-g:change-prompt(  )+reload(sesh list -c)'
-    --bind 'ctrl-x:change-prompt(  )+reload(sesh list -z)'
-    --bind 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d -E .Trash . ~)'
-    --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(  )+reload(sesh list)'
-  )
-
-  local selected
-  if [ -n "$TMUX" ]; then
-    selected=$(sesh list | fzf-tmux -p 55%,60% "${_fzf_opts[@]}")
-  else
-    selected=$(sesh list | fzf --height 60% --border "${_fzf_opts[@]}")
-  fi
-
-  [ -n "$selected" ] && sesh connect "$selected"
+  sesh connect $(
+        sesh list | fzf-tmux -p 55%,60% \
+                --no-sort --border-label ' sesh ' --prompt '  ' \
+                --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
+                --bind 'tab:down,btab:up' \
+                --bind 'ctrl-a:change-prompt(  )+reload(sesh list)' \
+                --bind 'ctrl-t:change-prompt(  )+reload(sesh list -t)' \
+                --bind 'ctrl-g:change-prompt(  )+reload(sesh list -c)' \
+                --bind 'ctrl-x:change-prompt(  )+reload(sesh list -z)' \
+                --bind 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
+                --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(  )+reload(sesh list)'
+)
 }
 
 alias s=sesh_connect
@@ -55,7 +47,13 @@ alias lt='ls --tree'
 # PATH
 # ============================================
 . "$HOME/.local/bin/env"
+export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+
+# ============================================
+# fzf
+# ============================================
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # ============================================
 # Starship prompt
@@ -67,6 +65,11 @@ eval "$(starship init zsh)"
 # ============================================
 . "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh)"
+
+# ============================================
+# Zoxide (smart cd)
+# ============================================
+eval "$(zoxide init zsh)"
 
 # ============================================
 # ROS2 Jazzy
