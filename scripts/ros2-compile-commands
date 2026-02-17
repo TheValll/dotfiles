@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""Merge all compile_commands.json from colcon build/ into workspace root."""
+import json
+import sys
+from pathlib import Path
+
+def merge(workspace: Path):
+    build = workspace / "build"
+    if not build.exists():
+        print(f"No build/ directory found in {workspace}", file=sys.stderr)
+        sys.exit(1)
+
+    commands = []
+    for cc in build.rglob("compile_commands.json"):
+        commands.extend(json.loads(cc.read_text()))
+
+    out = workspace / "compile_commands.json"
+    out.write_text(json.dumps(commands, indent=2))
+    print(f"Merged {len(commands)} entries into {out}")
+
+if __name__ == "__main__":
+    ws = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.cwd()
+    merge(ws)
