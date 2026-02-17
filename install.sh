@@ -225,6 +225,12 @@ if ! cmd_exists kitty; then
         "$HOME/.local/share/applications/kitty.desktop"
     sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" \
         "$HOME/.local/share/applications/kitty.desktop"
+fi
+# Set Kitty as default terminal
+if cmd_exists kitty; then
+    log "Setting Kitty as default terminal..."
+    sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$(which kitty)" 50
+    sudo update-alternatives --set x-terminal-emulator "$(which kitty)"
 else
     info "Kitty already installed"
 fi
@@ -374,7 +380,10 @@ chmod +x "$HOME/.local/bin/ros2-compile-commands"
 # 15. Install Tmux plugins
 # ============================================================
 log "Installing Tmux plugins via TPM..."
+# Start a detached tmux server so TPM can run properly
+tmux new-session -d -s _tpm_install 2>/dev/null || true
 "$HOME/.tmux/plugins/tpm/bin/install_plugins" || warn "TPM plugin install failed (run prefix+I inside tmux)"
+tmux kill-session -t _tpm_install 2>/dev/null || true
 
 # ============================================================
 # 16. First Neovim launch (installs lazy.nvim + all plugins)
