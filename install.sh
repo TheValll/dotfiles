@@ -50,6 +50,7 @@ sudo apt-get install -y \
     curl \
     wget \
     unzip \
+    fontconfig \
     software-properties-common \
     python3 \
     python3-dev \
@@ -98,7 +99,6 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
 fi
 
 # Agnosterzak theme
-ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 mkdir -p "$ZSH_CUSTOM/themes"
 if [ ! -f "$ZSH_CUSTOM/themes/agnosterzak.zsh-theme" ]; then
     log "Installing agnosterzak theme..."
@@ -162,6 +162,12 @@ if ! cmd_exists fzf; then
     fi
 else
     info "fzf already installed"
+fi
+
+# Ensure fzf-tmux symlink exists (even if fzf was already installed)
+if [ -f "$HOME/.fzf/bin/fzf-tmux" ] && [ ! -L "$HOME/.local/bin/fzf-tmux" ]; then
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$HOME/.fzf/bin/fzf-tmux" "$HOME/.local/bin/fzf-tmux"
 fi
 
 # fd-find
@@ -401,16 +407,15 @@ echo -e "${GREEN}  Installation complete!${NC}"
 echo -e "${GREEN}============================================${NC}"
 echo ""
 echo "Installed:"
+echo "  Font:      JetBrainsMono Nerd Font"
 echo "  Shell:     zsh + oh-my-zsh (agnosterzak) + starship + atuin"
-echo "  Terminal:  kitty + tmux (tokyonight) + sesh"
-echo "  Tools:     lsd, fzf, fd, ripgrep, zoxide, lazygit"
+echo "  Terminal:  kitty (default) + tmux (tokyonight) + sesh"
+echo "  Tools:     lsd, fzf, fzf-tmux, fd, ripgrep, zoxide, lazygit"
 echo "  Editor:    neovim (LazyVim) + mini.files, ros2, python-repl, snacks"
 echo "  Languages: rust (rustup), python3 + uv"
 echo "  Robotics:  ROS2 Jazzy"
 echo ""
 echo "Next steps:"
 echo "  1. Log out and log back in (or run: exec zsh)"
-echo "  2. Open tmux and press Ctrl+a then I to install tmux plugins"
-echo "  3. Open nvim to verify all plugins loaded correctly"
-echo "  4. JetBrainsMono Nerd Font is installed automatically"
+echo "  2. Open nvim to verify all plugins loaded correctly"
 echo ""
