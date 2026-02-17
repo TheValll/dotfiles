@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ============================================================
 # Dotfiles installer for fresh Ubuntu
-# Installs: zsh, omz, starship, atuin, zoxide, tmux, sesh,
-#           lsd, fzf, fd, ripgrep, neovim, lazygit, kitty,
-#           rust, python, uv, ROS2 Jazzy
+# Installs: nerd-font, zsh, omz, starship, atuin, zoxide,
+#           tmux, sesh, lsd, fzf, fd, ripgrep, neovim,
+#           lazygit, kitty, rust, python, uv, ROS2 Jazzy
 # ============================================================
 set -euo pipefail
 
@@ -57,7 +57,22 @@ sudo apt-get install -y \
     python3-venv
 
 # ============================================================
-# 2. Zsh + Oh My Zsh
+# 2. JetBrainsMono Nerd Font
+# ============================================================
+if ! fc-list | grep -qi "JetBrainsMono Nerd"; then
+    log "Installing JetBrainsMono Nerd Font..."
+    mkdir -p "$HOME/.local/share/fonts"
+    curl -fsSL -o /tmp/jetbrains-nerd.zip \
+        https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+    unzip -o /tmp/jetbrains-nerd.zip -d "$HOME/.local/share/fonts/JetBrainsMono"
+    fc-cache -fv
+    rm /tmp/jetbrains-nerd.zip
+else
+    info "JetBrainsMono Nerd Font already installed"
+fi
+
+# ============================================================
+# 3. Zsh + Oh My Zsh
 # ============================================================
 log "Installing Zsh..."
 ensure_apt zsh
@@ -82,6 +97,17 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
+# Agnosterzak theme
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+mkdir -p "$ZSH_CUSTOM/themes"
+if [ ! -f "$ZSH_CUSTOM/themes/agnosterzak.zsh-theme" ]; then
+    log "Installing agnosterzak theme..."
+    curl -fsSL -o "$ZSH_CUSTOM/themes/agnosterzak.zsh-theme" \
+        https://raw.githubusercontent.com/zakaziko99/agnosterzak-ohmyzsh-theme/master/agnosterzak.zsh-theme
+else
+    info "agnosterzak theme already installed"
+fi
+
 # Set zsh as default shell
 if [ "$SHELL" != "$(which zsh)" ]; then
     log "Setting zsh as default shell..."
@@ -89,7 +115,7 @@ if [ "$SHELL" != "$(which zsh)" ]; then
 fi
 
 # ============================================================
-# 3. Starship prompt
+# 4. Starship prompt
 # ============================================================
 if ! cmd_exists starship; then
     log "Installing Starship..."
@@ -99,7 +125,7 @@ else
 fi
 
 # ============================================================
-# 4. Atuin (shell history)
+# 5. Atuin (shell history)
 # ============================================================
 if ! cmd_exists atuin; then
     log "Installing Atuin..."
@@ -109,7 +135,7 @@ else
 fi
 
 # ============================================================
-# 5. Terminal tools: lsd, fzf, fd, ripgrep, zoxide
+# 6. Terminal tools: lsd, fzf, fd, ripgrep, zoxide
 # ============================================================
 log "Installing terminal tools..."
 
@@ -129,6 +155,11 @@ if ! cmd_exists fzf; then
     log "Installing fzf..."
     git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
     "$HOME/.fzf/install" --all --no-bash --no-fish
+    # Ensure fzf-tmux is available in PATH
+    if [ -f "$HOME/.fzf/bin/fzf-tmux" ] && [ ! -L "$HOME/.local/bin/fzf-tmux" ]; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sf "$HOME/.fzf/bin/fzf-tmux" "$HOME/.local/bin/fzf-tmux"
+    fi
 else
     info "fzf already installed"
 fi
@@ -153,7 +184,7 @@ else
 fi
 
 # ============================================================
-# 6. Tmux + TPM + Sesh
+# 7. Tmux + TPM + Sesh
 # ============================================================
 ensure_apt tmux
 
@@ -178,7 +209,7 @@ else
 fi
 
 # ============================================================
-# 7. Kitty terminal
+# 8. Kitty terminal
 # ============================================================
 if ! cmd_exists kitty; then
     log "Installing Kitty..."
@@ -199,7 +230,7 @@ else
 fi
 
 # ============================================================
-# 8. Neovim (latest stable from PPA)
+# 9. Neovim (latest stable from PPA)
 # ============================================================
 if ! cmd_exists nvim; then
     log "Installing Neovim..."
@@ -211,7 +242,7 @@ else
 fi
 
 # ============================================================
-# 9. Lazygit (via Go)
+# 10. Lazygit (via Go)
 # ============================================================
 if ! cmd_exists lazygit; then
     log "Installing lazygit..."
@@ -230,7 +261,7 @@ else
 fi
 
 # ============================================================
-# 10. Rust (via rustup)
+# 11. Rust (via rustup)
 # ============================================================
 if ! cmd_exists rustup; then
     log "Installing Rust via rustup..."
@@ -241,7 +272,7 @@ else
 fi
 
 # ============================================================
-# 11. Python + UV
+# 12. Python + UV
 # ============================================================
 if ! cmd_exists uv; then
     log "Installing UV (Python package manager)..."
@@ -251,7 +282,7 @@ else
 fi
 
 # ============================================================
-# 12. ROS2 Jazzy
+# 13. ROS2 Jazzy
 # ============================================================
 if [ ! -f /opt/ros/jazzy/setup.zsh ]; then
     log "Installing ROS2 Jazzy..."
@@ -279,7 +310,7 @@ else
 fi
 
 # ============================================================
-# 13. Deploy dotfiles
+# 14. Deploy dotfiles
 # ============================================================
 log "Deploying configuration files..."
 
@@ -340,13 +371,13 @@ cp "$DOTFILES_DIR/scripts/ros2-compile-commands" "$HOME/.local/bin/ros2-compile-
 chmod +x "$HOME/.local/bin/ros2-compile-commands"
 
 # ============================================================
-# 14. Install Tmux plugins
+# 15. Install Tmux plugins
 # ============================================================
 log "Installing Tmux plugins via TPM..."
 "$HOME/.tmux/plugins/tpm/bin/install_plugins" || warn "TPM plugin install failed (run prefix+I inside tmux)"
 
 # ============================================================
-# 15. First Neovim launch (installs lazy.nvim + all plugins)
+# 16. First Neovim launch (installs lazy.nvim + all plugins)
 # ============================================================
 log "Installing Neovim plugins (headless)..."
 nvim --headless "+Lazy! sync" +qa 2>/dev/null || warn "Neovim plugin sync may need a manual :Lazy sync"
@@ -371,6 +402,5 @@ echo "Next steps:"
 echo "  1. Log out and log back in (or run: exec zsh)"
 echo "  2. Open tmux and press Ctrl+a then I to install tmux plugins"
 echo "  3. Open nvim to verify all plugins loaded correctly"
-echo "  4. Install JetBrainsMono Nerd Font if not already installed:"
-echo "     https://www.nerdfonts.com/font-downloads"
+echo "  4. JetBrainsMono Nerd Font is installed automatically"
 echo ""
