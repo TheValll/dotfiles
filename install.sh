@@ -153,7 +153,9 @@ fi
 # fzf
 if ! cmd_exists fzf; then
     log "Installing fzf..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+    if [ ! -d "$HOME/.fzf" ]; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+    fi
     "$HOME/.fzf/install" --all --no-bash --no-fish
     # Ensure fzf-tmux is available in PATH
     if [ -f "$HOME/.fzf/bin/fzf-tmux" ] && [ ! -L "$HOME/.local/bin/fzf-tmux" ]; then

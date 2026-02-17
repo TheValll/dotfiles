@@ -17,8 +17,15 @@ source $ZSH/oh-my-zsh.sh
 # Sesh (tmux session manager)
 # ============================================
 function sesh_connect() {
+  local fzf_cmd
+  if [ -n "$TMUX" ]; then
+    fzf_cmd="fzf-tmux -p 55%,60%"
+  else
+    fzf_cmd="fzf --height 60% --border"
+  fi
+
   sesh connect $(
-        sesh list | fzf-tmux -p 55%,60% \
+        sesh list | eval $fzf_cmd \
                 --no-sort --border-label ' sesh ' --prompt '  ' \
                 --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
                 --bind 'tab:down,btab:up' \
