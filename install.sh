@@ -225,14 +225,15 @@ if ! cmd_exists kitty; then
         "$HOME/.local/share/applications/kitty.desktop"
     sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" \
         "$HOME/.local/share/applications/kitty.desktop"
+else
+    info "Kitty already installed"
 fi
+
 # Set Kitty as default terminal
 if cmd_exists kitty; then
     log "Setting Kitty as default terminal..."
     sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$(which kitty)" 50
     sudo update-alternatives --set x-terminal-emulator "$(which kitty)"
-else
-    info "Kitty already installed"
 fi
 
 # ============================================================
