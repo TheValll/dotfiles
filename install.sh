@@ -380,6 +380,7 @@ cp "$DOTFILES_DIR/nvim/lua/plugins/mini-files.lua" "$HOME/.config/nvim/lua/plugi
 cp "$DOTFILES_DIR/nvim/lua/plugins/ros2.lua" "$HOME/.config/nvim/lua/plugins/ros2.lua"
 cp "$DOTFILES_DIR/nvim/lua/plugins/repl.lua" "$HOME/.config/nvim/lua/plugins/repl.lua"
 cp "$DOTFILES_DIR/nvim/lua/plugins/snacks.lua" "$HOME/.config/nvim/lua/plugins/snacks.lua"
+cp "$DOTFILES_DIR/nvim/lua/plugins/colorscheme.lua" "$HOME/.config/nvim/lua/plugins/colorscheme.lua"
 
 # ROS2 scripts
 cp "$DOTFILES_DIR/scripts/ros2-compile-commands" "$HOME/.local/bin/ros2-compile-commands"
