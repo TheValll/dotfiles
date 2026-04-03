@@ -1,0 +1,11 @@
+# ============================================
+# Atuin - Shell history
+# https://docs.atuin.sh/configuration/config/
+# ============================================
+
+# Execute command on Enter, Tab to edit
+enter_accept = true
+
+[sync]
+# Sync v2 enabled
+records = true

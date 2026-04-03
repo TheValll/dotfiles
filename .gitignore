@@ -1,0 +1,23 @@
+# Secrets
+.secret
+
+# Backups from install.sh
+.backup/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Caches
+*.zwc
+.zcompdump*
+
+# Oh-my-zsh cache
+zsh/.oh-my-zsh/cache/
+zsh/.oh-my-zsh/log/
+
+# Nvim state/cache (lazy.nvim downloads, etc.)
+nvim/.config/nvim/lazy-lock.json
+
+# Atuin database (history is local)
+atuin/.config/atuin/history.db

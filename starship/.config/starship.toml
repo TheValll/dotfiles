@@ -1,0 +1,53 @@
+# ============================================
+# Starship - Cross-shell prompt
+# https://starship.rs/config/
+# ============================================
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Show only the icon, no version - keeps the prompt clean
+
+# Languages used
+[python]
+format = 'via [$symbol]($style)'
+
+[rust]
+format = 'via [$symbol]($style)'
+
+[golang]
+format = 'via [$symbol]($style)'
+
+[nodejs]
+format = 'via [$symbol]($style)'
+
+[bun]
+format = "via [$symbol]($style)"
+
+[lua]
+format = 'via [$symbol]($style)'
+
+[c]
+format = "via [$symbol($name)]($style)"
+
+[cpp]
+format = "via [$symbol($name)]($style)"
+
+[cmake]
+format = "via [$symbol]($style)"
+
+[java]
+format = 'via [$symbol]($style)'
+
+[dotnet]
+format = "[$symbol]($style)"
+
+[docker_context]
+format = 'via [$symbol]($style)'
+
+[helm]
+format = 'via [$symbol]($style)'
+
+[kotlin]
+format = 'via [$symbol]($style)'
+
+[zig]
+format = 'via [$symbol]($style)'

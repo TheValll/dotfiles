@@ -1,0 +1,25 @@
+[user]
+	# Valeurs injectees depuis ~/.secret (GIT_USER_NAME / GIT_USER_EMAIL)
+	# Switcher pro/perso en changeant le bloc actif dans .secret
+	useConfigOnly = true
+
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+
+[credential "https://gitlab.icebergdatalab.com"]
+	helper =
+	helper = !/usr/bin/glab auth git-credential
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[core]
+	editor = nvim

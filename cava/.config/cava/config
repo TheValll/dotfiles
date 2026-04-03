@@ -1,0 +1,31 @@
+# ============================================
+# Cava - Audio visualizer
+# Wallust template for colors
+# ============================================
+
+[general]
+
+[input]
+method = pulse
+source = auto
+method = pipewire
+source = auto
+
+[output]
+
+[color]
+# Gradient from wallust palette
+gradient = 1
+gradient_count = 8
+gradient_color_1 = '#4C4D50'
+gradient_color_2 = '#1F242F'
+gradient_color_3 = '#2F4E67'
+gradient_color_4 = '#587A8A'
+gradient_color_5 = '#B8D2DD'
+gradient_color_6 = '#526E80'
+gradient_color_7 = '#75A3B8'
+gradient_color_8 = '#B8D2DD'
+
+[smoothing]
+
+[eq]
