@@ -60,7 +60,7 @@ install_hyprland() {
         polkit-gnome \
         cava \
         kvantum-manager qt5ct qt6ct \
-        nwg-look \
+        nwg-look nwg-displays \
         wallust
 
     # Bibata cursor theme
