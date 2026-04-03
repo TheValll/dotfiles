@@ -1,6 +1,9 @@
 #!/bin/bash
 # Dotfiles installer using GNU Stow
-# Usage: ./install.sh
+# Usage:
+#   ./install.sh                  Full install (packages + stow)
+#   ./install.sh --no-packages    Stow only (skip apt)
+#   ./install.sh --hyprland       Full install + Hyprland desktop
 
 set -e
 
@@ -9,25 +12,24 @@ BACKUP_DIR="$DOTFILES_DIR/.backup/$(date +%Y%m%d_%H%M%S)"
 cd "$DOTFILES_DIR"
 
 # ============================================
-# System packages
+# Core packages (shell, terminal, dev tools)
 # ============================================
 install_packages() {
-    echo "Installing system packages..."
-
-    # Core
+    echo "Installing core packages..."
     sudo apt update
     sudo apt install -y \
         zsh stow git curl wget \
         tmux kitty lsd btop \
-        neovim ripgrep fd-find fzf
+        neovim ripgrep fd-find fzf \
+        jq playerctl pamixer
 
-    # Starship (not in apt)
+    # Starship
     if ! command -v starship &>/dev/null; then
         echo "Installing Starship..."
         curl -sS https://starship.rs/install.sh | sh -s -- -y
     fi
 
-    # Atuin (not in apt)
+    # Atuin
     if ! command -v atuin &>/dev/null; then
         echo "Installing Atuin..."
         curl -sSf https://setup.atuin.sh | bash
@@ -38,6 +40,39 @@ install_packages() {
         echo "Setting zsh as default shell..."
         chsh -s "$(which zsh)"
     fi
+}
+
+# ============================================
+# Hyprland desktop environment
+# ============================================
+install_hyprland() {
+    echo "Installing Hyprland and desktop packages..."
+    sudo apt install -y \
+        hyprland hyprlock hypridle \
+        waybar rofi-wayland \
+        swaync wlogout swappy \
+        swww \
+        grim slurp wl-clipboard cliphist \
+        brightnessctl \
+        pipewire wireplumber pavucontrol \
+        blueman network-manager-gnome \
+        thunar \
+        polkit-gnome \
+        cava \
+        kvantum-manager qt5ct qt6ct \
+        nwg-look \
+        wallust
+
+    # Bibata cursor theme
+    if [ ! -d "$HOME/.icons/Bibata-Modern-Ice" ]; then
+        echo "NOTE: Install Bibata cursor manually:"
+        echo "  https://github.com/ful1e5/Bibata_Cursor/releases"
+    fi
+
+    # GTK themes
+    mkdir -p "$HOME/.themes" "$HOME/.icons"
+    echo "NOTE: Install GTK themes if needed:"
+    echo "  sudo apt install flat-remix-gtk flat-remix"
 }
 
 # ============================================
@@ -66,13 +101,6 @@ install_plugins() {
         echo "Installing TPM..."
         git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
     fi
-
-    # GTK Themes & Icons (manual install)
-    mkdir -p "$HOME/.themes" "$HOME/.icons"
-    echo "NOTE: Install themes manually if needed:"
-    echo "  - GTK: sudo apt install flat-remix-gtk"
-    echo "  - Icons: https://github.com/ful1e5/Bibata_Cursor"
-    echo "  - Icons: sudo apt install flat-remix"
 }
 
 # ============================================
@@ -108,9 +136,12 @@ packages=(
 echo "=== Dotfiles installer ==="
 echo ""
 
-# Install packages (skip with --no-packages)
+# Install packages
 if [ "$1" != "--no-packages" ]; then
     install_packages
+    if [ "$1" = "--hyprland" ]; then
+        install_hyprland
+    fi
 fi
 
 install_plugins
