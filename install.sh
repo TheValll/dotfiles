@@ -9,9 +9,41 @@ BACKUP_DIR="$DOTFILES_DIR/.backup/$(date +%Y%m%d_%H%M%S)"
 cd "$DOTFILES_DIR"
 
 # ============================================
-# Dependencies (installed if missing)
+# System packages
 # ============================================
-install_deps() {
+install_packages() {
+    echo "Installing system packages..."
+
+    # Core
+    sudo apt update
+    sudo apt install -y \
+        zsh stow git curl wget \
+        tmux kitty lsd btop \
+        neovim ripgrep fd-find fzf
+
+    # Starship (not in apt)
+    if ! command -v starship &>/dev/null; then
+        echo "Installing Starship..."
+        curl -sS https://starship.rs/install.sh | sh -s -- -y
+    fi
+
+    # Atuin (not in apt)
+    if ! command -v atuin &>/dev/null; then
+        echo "Installing Atuin..."
+        curl -sSf https://setup.atuin.sh | bash
+    fi
+
+    # Set zsh as default shell
+    if [ "$SHELL" != "$(which zsh)" ]; then
+        echo "Setting zsh as default shell..."
+        chsh -s "$(which zsh)"
+    fi
+}
+
+# ============================================
+# Zsh & Tmux plugins (no sudo needed)
+# ============================================
+install_plugins() {
     # Oh-My-Zsh
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "Installing Oh-My-Zsh..."
@@ -35,22 +67,12 @@ install_deps() {
         git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
     fi
 
-    # GTK Themes
-    THEMES_DIR="$HOME/.themes"
-    if [ ! -d "$THEMES_DIR/Flat-Remix-GTK-Blue-Dark" ]; then
-        echo "Installing GTK themes (Flat-Remix)..."
-        mkdir -p "$THEMES_DIR"
-        # sudo apt install flat-remix-gtk  # Ubuntu/Debian
-    fi
-
-    # Icon Themes
-    ICONS_DIR="$HOME/.icons"
-    if [ ! -d "$ICONS_DIR/Bibata-Modern-Ice" ]; then
-        echo "Installing icon themes..."
-        mkdir -p "$ICONS_DIR"
-        # Bibata: https://github.com/ful1e5/Bibata_Cursor
-        # Flat-Remix: sudo apt install flat-remix
-    fi
+    # GTK Themes & Icons (manual install)
+    mkdir -p "$HOME/.themes" "$HOME/.icons"
+    echo "NOTE: Install themes manually if needed:"
+    echo "  - GTK: sudo apt install flat-remix-gtk"
+    echo "  - Icons: https://github.com/ful1e5/Bibata_Cursor"
+    echo "  - Icons: sudo apt install flat-remix"
 }
 
 # ============================================
@@ -60,12 +82,10 @@ backup_conflicts() {
     local pkg="$1"
     local pkg_dir="$DOTFILES_DIR/$pkg"
 
-    # Find all files that stow would create symlinks for
     while IFS= read -r -d '' file; do
         local rel="${file#$pkg_dir/}"
         local target="$HOME/$rel"
 
-        # If target exists and is NOT already a symlink, back it up
         if [ -e "$target" ] && [ ! -L "$target" ]; then
             local backup_path="$BACKUP_DIR/$pkg/$rel"
             mkdir -p "$(dirname "$backup_path")"
@@ -76,7 +96,7 @@ backup_conflicts() {
 }
 
 # ============================================
-# Stow packages
+# Main
 # ============================================
 packages=(
     zsh starship tmux kitty atuin
@@ -85,11 +105,18 @@ packages=(
     qt kvantum gtk
 )
 
-echo "Installing dotfiles from $DOTFILES_DIR"
+echo "=== Dotfiles installer ==="
+echo ""
 
-install_deps
+# Install packages (skip with --no-packages)
+if [ "$1" != "--no-packages" ]; then
+    install_packages
+fi
 
-has_backups=false
+install_plugins
+
+echo ""
+echo "Stowing packages..."
 for pkg in "${packages[@]}"; do
     if [ -d "$pkg" ]; then
         backup_conflicts "$pkg"
@@ -98,7 +125,7 @@ for pkg in "${packages[@]}"; do
     fi
 done
 
-# Symlink .secret to home if it exists and isn't already there
+# Symlink .secret
 if [ -f "$DOTFILES_DIR/.secret" ] && [ ! -f "$HOME/.secret" ]; then
     ln -s "$DOTFILES_DIR/.secret" "$HOME/.secret"
     echo "  linked .secret"
@@ -112,4 +139,4 @@ echo ""
 echo "Done! Next steps:"
 echo "  1. Fill in ~/.secret with your API keys and git profile"
 echo "  2. Open tmux and press Ctrl+a then I to install tmux plugins"
-echo "  3. Restart your shell"
+echo "  3. Restart your shell (or: exec zsh)"
