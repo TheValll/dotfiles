@@ -2,6 +2,8 @@
 	# Valeurs injectees depuis ~/.secret (GIT_USER_NAME / GIT_USER_EMAIL)
 	# Switcher pro/perso en changeant le bloc actif dans .secret
 	useConfigOnly = true
+	name = vmassonniere
+	email = vmassonniere@icebergdatalab.com
 
 [credential "https://github.com"]
 	helper =
