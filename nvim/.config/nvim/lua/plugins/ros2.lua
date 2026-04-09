@@ -17,12 +17,45 @@ return {
           end,
         },
         pyright = {
+          root_dir = function(fname)
+            local util = require("lspconfig.util")
+            return util.root_pattern("package.xml", "setup.py", "setup.cfg")(fname)
+              or util.find_git_ancestor(fname)
+          end,
+          before_init = function(_, config)
+            local root = config.root_dir or vim.fn.getcwd()
+            local extra = {
+              "/opt/ros/jazzy/lib/python3.12/site-packages",
+            }
+            -- Add colcon install paths from workspace
+            local ws = root
+            -- Walk up to find the colcon workspace (directory containing install/)
+            while ws and ws ~= "/" do
+              local install_dir = ws .. "/install"
+              if vim.fn.isdirectory(install_dir) == 1 then
+                local handle = vim.loop.fs_scandir(install_dir)
+                if handle then
+                  while true do
+                    local name, typ = vim.loop.fs_scandir_next(handle)
+                    if not name then break end
+                    if typ == "directory" then
+                      local sp = install_dir .. "/" .. name .. "/lib/python3.12/site-packages"
+                      if vim.fn.isdirectory(sp) == 1 then
+                        table.insert(extra, sp)
+                      end
+                    end
+                  end
+                end
+                break
+              end
+              ws = vim.fn.fnamemodify(ws, ":h")
+            end
+            config.settings.python.analysis.extraPaths = extra
+          end,
           settings = {
             python = {
               analysis = {
-                extraPaths = {
-                  "/opt/ros/jazzy/lib/python3.12/site-packages",
-                },
+                extraPaths = {},
               },
             },
           },
