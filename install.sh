@@ -44,6 +44,8 @@ install_packages() {
     # wl-kbptr (keyboard-driven mouse pointer)
     if ! command -v wl-kbptr &>/dev/null; then
         echo "Installing wl-kbptr..."
+        sudo apt install -y meson ninja-build libwayland-dev wayland-protocols libxkbcommon-dev libcairo2-dev
+        rm -rf /tmp/wl-kbptr
         git clone https://github.com/moverest/wl-kbptr.git /tmp/wl-kbptr
         meson setup /tmp/wl-kbptr/build /tmp/wl-kbptr --buildtype=release
         meson compile -C /tmp/wl-kbptr/build
@@ -64,21 +66,62 @@ install_packages() {
 # ============================================
 install_hyprland() {
     echo "Installing Hyprland and desktop packages..."
+
+    # Hyprland PPA (packages Hyprland + all deps for Ubuntu 24.04)
+    if ! grep -q "cppiber/hyprland" /etc/apt/sources.list.d/*.list 2>/dev/null \
+       && ! grep -q "cppiber/hyprland" /etc/apt/sources.list.d/*.sources 2>/dev/null; then
+        echo "Adding Hyprland PPA..."
+        sudo add-apt-repository -y ppa:cppiber/hyprland
+        sudo apt update
+    fi
+
+    # Hyprland core + desktop tools
     sudo apt install -y \
         hyprland hyprlock hypridle \
-        waybar rofi-wayland \
-        swaync wlogout swappy \
-        swww \
+        xdg-desktop-portal-hyprland \
+        waybar rofi \
+        sway-notification-center wlogout \
         grim slurp wl-clipboard cliphist \
         brightnessctl \
         pipewire wireplumber pavucontrol \
         blueman network-manager-gnome \
         thunar \
-        polkit-gnome \
+        policykit-1-gnome \
         cava \
-        kvantum-manager qt5ct qt6ct \
-        nwg-look nwg-displays \
-        wallust
+        qt5-style-kvantum qt5ct qt6ct
+
+    # Cargo packages (not in PPA)
+    if command -v cargo &>/dev/null; then
+        for pkg in swappy wallust; do
+            if ! command -v "$pkg" &>/dev/null; then
+                echo "Installing $pkg via cargo..."
+                cargo install "$pkg"
+            fi
+        done
+        if ! command -v swww &>/dev/null || ! command -v swww-daemon &>/dev/null; then
+            echo "Installing swww via cargo..."
+            cargo install swww swww-daemon --git https://github.com/LGFae/swww
+        fi
+    else
+        echo "NOTE: Install cargo to get swappy, swww, and wallust"
+    fi
+
+    # nwg-displays
+    if ! command -v nwg-displays &>/dev/null; then
+        echo "Installing nwg-displays..."
+        sudo apt install -y python3-build python3-installer libgtk-layer-shell-dev gir1.2-gtklayershell-0.1
+        sudo ln -sf /usr/bin/python3 /usr/bin/python
+        rm -rf /tmp/nwg-displays
+        git clone https://github.com/nwg-piotr/nwg-displays /tmp/nwg-displays
+        cd /tmp/nwg-displays && sudo ./install.sh
+        cd "$DOTFILES_DIR"
+        rm -rf /tmp/nwg-displays
+    fi
+
+    # nwg-look
+    if ! command -v nwg-look &>/dev/null; then
+        echo "NOTE: Install nwg-look manually — see https://github.com/nwg-piotr/nwg-look"
+    fi
 
     # Bibata cursor theme
     if [ ! -d "$HOME/.icons/Bibata-Modern-Ice" ]; then
@@ -131,11 +174,19 @@ backup_conflicts() {
         local rel="${file#$pkg_dir/}"
         local target="$HOME/$rel"
 
+        # Skip symlinks and files already managed by stow (inside a symlinked dir)
         if [ -e "$target" ] && [ ! -L "$target" ]; then
-            local backup_path="$BACKUP_DIR/$pkg/$rel"
-            mkdir -p "$(dirname "$backup_path")"
-            mv "$target" "$backup_path"
-            echo "    backup: $rel"
+            local real_path
+            real_path="$(readlink -f "$target")"
+            case "$real_path" in
+                "$DOTFILES_DIR"/*) ;; # Already points into dotfiles repo, skip
+                *)
+                    local backup_path="$BACKUP_DIR/$pkg/$rel"
+                    mkdir -p "$(dirname "$backup_path")"
+                    mv "$target" "$backup_path"
+                    echo "    backup: $rel"
+                    ;;
+            esac
         fi
     done < <(find "$pkg_dir" -type f -print0)
 }
