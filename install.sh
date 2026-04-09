@@ -35,6 +35,23 @@ install_packages() {
         curl -sSf https://setup.atuin.sh | bash
     fi
 
+    # Kanata (keyboard remapper)
+    if ! command -v kanata &>/dev/null; then
+        echo "Installing Kanata..."
+        cargo install kanata
+    fi
+
+    # wl-kbptr (keyboard-driven mouse pointer)
+    if ! command -v wl-kbptr &>/dev/null; then
+        echo "Installing wl-kbptr..."
+        git clone https://github.com/moverest/wl-kbptr.git /tmp/wl-kbptr
+        meson setup /tmp/wl-kbptr/build /tmp/wl-kbptr --buildtype=release
+        meson compile -C /tmp/wl-kbptr/build
+        cp /tmp/wl-kbptr/build/wl-kbptr "$HOME/.local/bin/"
+        rm -rf /tmp/wl-kbptr
+    fi
+
+
     # Set zsh as default shell
     if [ "$SHELL" != "$(which zsh)" ]; then
         echo "Setting zsh as default shell..."
@@ -131,6 +148,7 @@ packages=(
     nvim lazygit git
     hyprland waybar rofi swaync wlogout wallust ags swappy quickshell cava
     qt kvantum gtk
+    kanata wl-kbptr
 )
 
 echo "=== Dotfiles installer ==="

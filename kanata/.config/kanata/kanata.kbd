@@ -1,0 +1,32 @@
+(defcfg
+  process-unmapped-keys no
+  windows-altgr cancel-lctl-press
+)
+
+(defsrc
+  caps h j k l m i o p n
+)
+
+(defalias
+  ;; Caps Lock : tap = Esc, hold = couche souris
+  caps-mouse (tap-hold 150 150 esc (layer-while-held mouse))
+
+  ;; Mouvements souris — sensibilité et accélération basses
+  ;; (movemouse-accel-* interval accel-time min-distance max-distance)
+  mup (movemouse-accel-up    1 2000 1 1)
+  mdn (movemouse-accel-down  1 2000 1 1)
+  mlf (movemouse-accel-left  1 2000 1 1)
+  mrg (movemouse-accel-right 1 2000 1 1)
+
+  ;; Scroll lent
+  sup (mwheel-up   50 60)
+  sdn (mwheel-down 50 60)
+)
+
+(deflayer base
+  @caps-mouse _ _ _ _ _ _ _ _ _
+)
+
+(deflayer mouse
+  _    @mlf  @mdn  @mup  @mrg  mlft  mrgt  @sup  mmid  @sdn
+)
