@@ -2,23 +2,23 @@
 modes=tile,bisect
 
 [mode_tile]
-label_color=#c0caf5dd
+label_color=#9ece6aff
 label_select_color=#7aa2f7ff
-unselectable_bg_color=#1a1b2666
-selectable_bg_color=#1a1b2644
+unselectable_bg_color=#1a1b26dd
+selectable_bg_color=#1a1b26cc
 selectable_border_color=#565f8955
 label_font_family=sans-serif
 label_font_size=8 50% 100
 label_symbols=abcdefghijklmnopqrstuvwxyz
 
 [mode_bisect]
-label_color=#c0caf5dd
+label_color=#9ece6aff
 label_font_size=20
 label_font_family=sans-serif
 label_padding=12
 pointer_size=20
 pointer_color=#f7768edd
-unselectable_bg_color=#1a1b2666
+unselectable_bg_color=#1a1b26dd
 even_area_bg_color=#7aa2f722
 even_area_border_color=#7aa2f744
 odd_area_bg_color=#bb9af722

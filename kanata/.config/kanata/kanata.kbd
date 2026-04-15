@@ -13,10 +13,10 @@
 
   ;; Mouvements souris — sensibilité et accélération basses
   ;; (movemouse-accel-* interval accel-time min-distance max-distance)
-  mup (movemouse-accel-up    1 2000 1 1)
-  mdn (movemouse-accel-down  1 2000 1 1)
-  mlf (movemouse-accel-left  1 2000 1 1)
-  mrg (movemouse-accel-right 1 2000 1 1)
+  mup (movemouse-accel-up    17 800 1 15)
+  mdn (movemouse-accel-down  17 800 1 15)
+  mlf (movemouse-accel-left  17 800 1 15)
+  mrg (movemouse-accel-right 17 800 1 15)
 
   ;; Scroll lent
   sup (mwheel-up   50 60)
