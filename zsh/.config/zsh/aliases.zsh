@@ -23,5 +23,5 @@ alias gss="git status"
 alias gm="git commit -m"
 
 # ROS2
-alias cbuild='colcon build && ros2-compile-commands .'
+alias cbuild='colcon build --cmake-args -DPython3_EXECUTABLE=/usr/bin/python3 && ros2-compile-commands .'
 alias ros2x='QT_QPA_PLATFORM=xcb ros2'
