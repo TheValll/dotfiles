@@ -1,0 +1,48 @@
+﻿[window]
+padding = { x = 8, y = 8 }
+opacity = 1.0
+
+[font]
+size = 15.0
+
+[font.normal]
+family = "Consolas"
+style = "Regular"
+
+[terminal.shell]
+program = "nu"
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.primary]
+background = "#1f2329"
+foreground = "#a0a5ad"
+
+[colors.cursor]
+text = "#1f2329"
+cursor = "#9aa889"
+
+[colors.selection]
+text = "#a0a5ad"
+background = "#323641"
+
+[colors.normal]
+black = "#1f2329"
+red = "#c87979"
+green = "#9aa889"
+yellow = "#c2ae7b"
+blue = "#83a0be"
+magenta = "#a58db0"
+cyan = "#82a6a5"
+white = "#a0a5ad"
+
+[colors.bright]
+black = "#737b86"
+red = "#d58b8b"
+green = "#aab795"
+yellow = "#d0bc8a"
+blue = "#91aecb"
+magenta = "#b49cbe"
+cyan = "#90b4b3"
+white = "#bac0c8"

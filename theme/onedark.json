@@ -1,0 +1,8 @@
+{
+  "bg0": "#1f2329", "bg_dim": "#181b20", "bg1": "#282c34", "bg2": "#30363f", "bg3": "#323641", "bg4": "#737b86",
+  "fg": "#a0a5ad", "red": "#c87979", "orange": "#c49a72", "yellow": "#c2ae7b", "green": "#9aa889", "blue": "#83a0be", "purple": "#a58db0", "aqua": "#82a6a5",
+  "grey0": "#68717d", "grey1": "#858c96", "grey2": "#68717d",
+  "bg_green": "#29302c", "bg_red": "#342b2c", "bg_yellow": "#37332b", "bg_blue": "#29313b", "bg_purple": "#302b35",
+  "ansi": ["#1f2329", "#c87979", "#9aa889", "#c2ae7b", "#83a0be", "#a58db0", "#82a6a5", "#a0a5ad"],
+  "brights": ["#737b86", "#d58b8b", "#aab795", "#d0bc8a", "#91aecb", "#b49cbe", "#90b4b3", "#bac0c8"]
+}
