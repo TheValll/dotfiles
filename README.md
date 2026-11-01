@@ -5,7 +5,7 @@
 ```sh
 brew install alacritty neovim nushell tmux ripgrep lazygit node sesh zoxide atuin
 
-DOTFILES="$HOME/dev/dotfiles"
+DOTFILES="$HOME/dotfiles"
 mkdir -p ~/.config/{alacritty,nvim,nushell,lazygit,theme}
 cp "$DOTFILES/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
 cp -R "$DOTFILES/nvim/." ~/.config/nvim/
@@ -40,7 +40,7 @@ mkdir -p ~/.atuin
 go install github.com/jesseduffield/lazygit@latest
 go install github.com/joshmedeski/sesh/v2@latest
 
-DOTFILES="$HOME/dev/dotfiles"
+DOTFILES="$HOME/dotfiles"
 mkdir -p ~/.config/{alacritty,nvim,nushell,lazygit,theme}
 cp "$DOTFILES/alacritty/alacritty.toml" ~/.config/alacritty/alacritty.toml
 cp -R "$DOTFILES/nvim/." ~/.config/nvim/
@@ -89,7 +89,8 @@ In Ubuntu, clone the dotfiles and run the setup script:
 
 ```sh
 sudo apt update && sudo apt install -y git
-cd /mnt/c/Users/Valentin/Documents/dev/dotfiles
+git clone https://github.com/TheValll/dotfiles "$HOME/dotfiles"
+cd "$HOME/dotfiles"
 bash scripts/setup-wsl.sh
 ```
 
