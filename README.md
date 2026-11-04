@@ -33,7 +33,7 @@ git clone https://github.com/neovim/nvim-lspconfig.git
 
 ```sh
 sudo apt update
-sudo apt install -y alacritty neovim nushell tmux ripgrep git nodejs npm golang-go zoxide
+sudo apt install -y alacritty neovim nushell tmux ripgrep git nodejs npm golang-go zoxide wl-clipboard xclip
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive
 mkdir -p ~/.atuin
 ~/.atuin/bin/atuin init nu > ~/.atuin/init.nu

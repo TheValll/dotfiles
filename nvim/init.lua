@@ -1,5 +1,6 @@
 -- Configuration personnelle : ajoutons les raccourcis un par un.
 -- Neovim herite de la police configuree dans le terminal.
+require('config.clipboard')
 
 -- Theme partage avec les terminaux : OneDark Darker.
 local apply_ui_theme = require('config.theme').apply_ui
@@ -12,10 +13,10 @@ vim.api.nvim_create_autocmd('User', {
 -- Espace est le prefixe des raccourcis en mode normal.
 vim.g.mapleader = ' '
 vim.keymap.set('n', '<Space>', '<Nop>', { silent = true })
-vim.keymap.set('n', '<leader>r', '/', { desc = 'Rechercher dans le fichier' })
-vim.keymap.set('n', '<leader>R', '?', { desc = 'Rechercher vers le haut dans le fichier' })
 vim.keymap.set('n', '<leader><CR>', '<cmd>nohlsearch<CR>', { desc = 'Effacer le surlignage de recherche' })
 vim.keymap.set('n', 'U', '<C-r>', { desc = 'Refaire la derniere modification annulee' })
+vim.keymap.set('n', 'a', 'i', { desc = 'Inserer avant le curseur' })
+vim.keymap.set('n', 'i', 'a', { desc = 'Inserer apres le curseur' })
 
 -- Afficher le fichier courant en haut de chaque fenetre, sans statut en bas.
 vim.opt.winbar = ' %t'
@@ -218,12 +219,6 @@ vim.keymap.set('n', '<leader><Space>', function()
 end, {
   desc = 'Rechercher un fichier dans le projet',
 })
-vim.keymap.set('n', '<leader>g', function()
-  local root = current_project_root()
-  snacks.picker.grep({ cwd = root, hidden = true, title = 'Recherche - ' .. vim.fs.basename(root) })
-end, {
-  desc = 'Rechercher du texte dans le projet',
-})
 vim.keymap.set('n', '<leader>lg', function()
   local lazygit = vim.fn.exepath('lazygit')
   if lazygit == '' then
@@ -234,6 +229,15 @@ vim.keymap.set('n', '<leader>lg', function()
 end, {
   desc = 'Ouvrir Lazygit dans le projet',
 })
+
+-- Flash : lancement avec Espace F, sans remplacer les raccourcis natifs.
+vim.cmd.packadd('flash.nvim')
+local flash = require('flash')
+flash.setup({
+  -- Le mode recherche reste ouvert meme quand aucun resultat ne correspond.
+  search = { mode = 'search' },
+})
+vim.keymap.set({ 'n', 'x', 'o' }, '<leader>f', function() require('config.flash').jump() end, { desc = 'Flash' })
 
 require('config.languages')
 require('config.tabs')

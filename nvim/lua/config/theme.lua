@@ -28,6 +28,8 @@ function M.apply_ui()
   if vim.g.colors_name ~= 'onedark' then return end
   local p = colors()
   local groups = {
+    PersonalFlashValid = { fg = p.green, bold = true },
+    PersonalFlashInvalid = { fg = p.red, bold = true },
     NormalNC = { fg = p.fg, bg = p.bg_dim },
     WinSeparator = { fg = p.grey2, bg = p.bg_dim },
     VertSplit = { fg = p.grey2, bg = p.bg_dim },
